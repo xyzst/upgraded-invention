@@ -11,7 +11,23 @@ const server = http.createServer((req, res) => {
 
   if (pathName === "/products" || pathName === "/") {
     res.writeHead(200, { "Content-Type": "text/html" });
-    res.end("This is the /products page!");
+    fs.readFile(
+      `${__dirname}/templates/template-laptop.html`,
+      "utf-8",
+      (err, data) => {
+        const laptop = laptopData[id];
+        let output = data
+          .replace(/{%PRODUCTNAME%}/g, laptop.productName)
+          .replace(/{%IMAGE%}/g, laptop.image)
+          .replace(/{%PRICE%}/g, laptop.price)
+          .replace(/{%SCREEN%}/g, laptop.screen)
+          .replace(/{%CPU%}/g, laptop.cpu)
+          .replace(/{%STORAGE%}/g, laptop.storage)
+          .replace(/{%RAM%}/g, laptop.ram)
+          .replace(/{%DESCRIPTION%}/g, laptop.description);
+        res.end(output);
+      }
+    );
   } else if (pathName === "/laptop" && id < laptopData.length) {
     res.writeHead(200, { "Content-Type": "text/html" });
     res.end(`This is the /laptops page for ${id}`);
